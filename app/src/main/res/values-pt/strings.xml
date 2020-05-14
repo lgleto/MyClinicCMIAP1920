@@ -6,4 +6,5 @@
     <string name="prompt_password">Senha</string>
     <string name="action_sign_in_short">Registar</string>
     <string name="action_login">Entrar</string>
+    <string name="login_failed">Falha ao fazer login</string>
 </resources>

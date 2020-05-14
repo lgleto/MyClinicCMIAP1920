@@ -5,6 +5,7 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.jetbrains.anko.doAsync
@@ -19,7 +20,10 @@ class VolleyHelper {
     private var queue : RequestQueue? = null
 
 
-    fun userLogin (context: Context, userName : String, password: String) {
+
+
+
+    fun userLogin (context: Context, userName : String, password: String, loginEvent : ((Boolean)->Unit) ) {
         doAsync {
             queue = Volley.newRequestQueue(context)
 
@@ -27,27 +31,31 @@ class VolleyHelper {
             jsonObject.put("utilizador", userName)
             jsonObject.put("password", password)
 
-            val stringRequest = object : StringRequest(
-                Request.Method.GET,
+            val jsonObjectRequest = object : JsonObjectRequest(
+                Request.Method.POST,
                 BASE_API + USER_LOGIN,
-                Response.Listener<String> {
-                    Log.d("VolleyHelper", it)
-
+                jsonObject,
+                Response.Listener{
+                    // login bem sucedido
+                    Log.d("VolleyHelper", it.toString())
+                    if (it.getBoolean("auth")){
+                        VolleyHelper.token = it.getString("token")
+                        loginEvent.invoke(true)
+                    }else {
+                        // login mal sucedido
+                        loginEvent.invoke(false)
+                    }
 
                 },
                 Response.ErrorListener {
                     Log.d("VolleyHelper", it.toString())
+                    // login mal sucedido
+                    loginEvent.invoke(false)
                 }
             ){
-                override fun getBody(): ByteArray {
-                    return jsonObject.toString().toByteArray(Charset.forName("UTF-8")) ?:  ByteArray(0)
-                }
 
-                override fun getBodyContentType(): String {
-                    return "application/json"
-                }
             }
-            queue!!.add(stringRequest)
+            queue!!.add(jsonObjectRequest)
         }
     }
 
@@ -55,6 +63,8 @@ class VolleyHelper {
 
         const val  BASE_API = "http://89.153.72.138:3000"
         const val  USER_LOGIN = "/user/login"
+
+        var token = ""
 
         private var mInstance : VolleyHelper? = VolleyHelper()
 
