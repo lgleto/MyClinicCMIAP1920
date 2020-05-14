@@ -83,6 +83,113 @@ class VolleyHelper {
         }
     }
 
+    fun getMedico(context: Context, id : Long, medicosEvent : ((JSONArray?)->Unit)){
+        doAsync {
+            queue = Volley.newRequestQueue(context)
+
+            val stringRequest = object : StringRequest(
+                Request.Method.GET,
+                BASE_API + MEDICOS + "/" + id,
+                Response.Listener<String>{
+                    medicosEvent.invoke(JSONArray(it))
+                },Response.ErrorListener {
+                    Log.d("VolleyHelper", it.toString())
+                    medicosEvent.invoke(null)
+                }
+            ){
+                override fun getHeaders(): MutableMap<String, String> {
+                    val map : MutableMap<String, String> = mutableMapOf<String, String>()
+                    map.put("x-access-token", token)
+                    return map
+                }
+            }
+
+            queue!!.add(stringRequest)
+        }
+    }
+
+    fun updateMedico(context: Context, id : Long, jsonObject: JSONObject,  medicosEvent : ((Boolean)->Unit)){
+        doAsync {
+            queue = Volley.newRequestQueue(context)
+
+            val jsonObjectRequest = object : JsonObjectRequest(
+                Request.Method.PUT,
+                BASE_API + MEDICOS + "/" + id,
+                jsonObject,
+                Response.Listener {
+                    //medicosEvent.invoke(JSONArray(it))
+                    Log.d("VolleyHelper", it.toString())
+                },Response.ErrorListener {
+                    Log.d("VolleyHelper", it.toString())
+
+                }
+            ){
+                override fun getHeaders(): MutableMap<String, String> {
+                    val map : MutableMap<String, String> = mutableMapOf<String, String>()
+                    map.put("x-access-token", token)
+                    return map
+                }
+            }
+
+            queue!!.add(jsonObjectRequest)
+        }
+    }
+
+
+    fun addMedico(context: Context, jsonObject: JSONObject,  medicosEvent : ((Boolean)->Unit)){
+        doAsync {
+            queue = Volley.newRequestQueue(context)
+
+            val jsonObjectRequest = object : JsonObjectRequest(
+                Request.Method.POST,
+                BASE_API + MEDICOS ,
+                jsonObject,
+                Response.Listener {
+                    //medicosEvent.invoke(JSONArray(it))
+                    Log.d("VolleyHelper", it.toString())
+                },Response.ErrorListener {
+                    Log.d("VolleyHelper", it.toString())
+
+                }
+            ){
+                override fun getHeaders(): MutableMap<String, String> {
+                    val map : MutableMap<String, String> = mutableMapOf<String, String>()
+                    map.put("x-access-token", token)
+                    return map
+                }
+            }
+
+            queue!!.add(jsonObjectRequest)
+        }
+    }
+
+    fun deleteMedico(context: Context, id: Long,  medicosEvent : ((Boolean)->Unit)){
+        doAsync {
+            queue = Volley.newRequestQueue(context)
+
+            val stringRequest = object : StringRequest(
+                Request.Method.DELETE,
+                BASE_API + MEDICOS + "/" + id,
+
+                Response.Listener<String> {
+                    //medicosEvent.invoke(JSONArray(it))
+                    Log.d("VolleyHelper", it.toString())
+                },Response.ErrorListener {
+                    Log.d("VolleyHelper", it.toString())
+
+                }
+            ){
+                override fun getHeaders(): MutableMap<String, String> {
+                    val map : MutableMap<String, String> = mutableMapOf<String, String>()
+                    map.put("x-access-token", token)
+                    return map
+                }
+            }
+
+            queue!!.add(stringRequest)
+        }
+    }
+
 
     companion object {
 
