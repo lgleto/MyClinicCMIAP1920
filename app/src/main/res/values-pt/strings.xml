@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyClinic</string>
+    <string name="title_activity_login">Registar</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Senha</string>
+    <string name="action_sign_in_short">Registar</string>
+    <string name="action_login">Entrar</string>
+</resources>
